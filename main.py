@@ -18,30 +18,65 @@ def send_task_status(json_body):
     bot.send_message(chat_id=chat_id, text=message)
 
 
-def polling():
+def listen_polling():
     token = os.getenv('token')
     api_url = 'https://dvmn.org/api/long_polling/'
     headers = {
         'Authorization': f'Token {token}'
     }
+    params = None
     timestamp_to_request = None
     while True:
         try:
-            if timestamp_to_request:
-                response = requests.get(
-                    api_url,
-                    headers=headers,
-                    params={'timestamp': timestamp_to_request})
-                timestamp_to_request = None
+            import time
+            time.sleep(60)
+            print(params)
+            response = requests.get(api_url, headers=headers, params=params)
+            params = None
+            if response.ok:
+                json_response = response.json()
+                status = json_response.get('status')
+                if status == 'timeout':
+                    print('Timeout!')
+                    print(json_response)
+                    timestamp_to_request = json_response.get('timestamp_to_request')
+
+                    print(timestamp_to_request)
+                    params = {'timestamp': timestamp_to_request}
+                    timestamp_to_request = None
+                elif status == 'found':
+                    print(f'--->{json_response}')
+                    # send_task_status(json_response)
+                    params = None
             else:
-                response = requests.get(api_url, headers=headers)
-            json_response = response.json()
-            timestamp_to_request = json_response.get('timestamp_to_request')
-            status = json_response['status']
-            if status == 'found':
-                send_task_status(json_response)
-        except requests.exceptions.ReadTimeout as e:
-            print(f"Изменений нет, ждем дальше..")
+                raise requests.HTTPError(response)
+            # if timestamp_to_request:
+            #     response = requests.get(
+            #         api_url,
+            #         headers=headers,
+            #         params={'timestamp': timestamp_to_request})
+            #     timestamp_to_request = None
+            # else:
+            # if timestamp_to_request:
+            #     response = requests.get(api_url, headers=headers)
+            #     if response.ok:
+            #         json_response = response.json()
+            #         print(json_response)
+            #         timestamp_to_request = json_response.get('timestamp_to_request')
+            #         status = json_response['status']
+            #         if status == 'found':
+            #             send_task_status(json_response)
+            #         elif status == 'timeout':
+            #             timestamp_to_request = response_json.get('timestamp_to_request')
+            #             response = requests.get(
+            #                 api_url,
+            #                 headers=headers,
+            #                 params={'timestamp': timestamp_to_request})
+            #             timestamp_to_request = None
+            #     else:
+            #         raise requests.HTTPError(response)
+        except requests.exceptions.ConnectionError as e:
+            print(f"Не удалось установить соединение с сервером, пробуем ещё раз...")
 
 
 if __name__ == '__main__':
@@ -57,4 +92,4 @@ if __name__ == '__main__':
     }
     updater = Updater(token=bot_token, request_kwargs=request_kwargs)
     bot = updater.bot
-    polling()
+    listen_polling()
