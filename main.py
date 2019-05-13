@@ -1,4 +1,5 @@
 import os
+import time
 import requests
 from telegram.ext import Updater
 from dotenv import load_dotenv
@@ -24,70 +25,40 @@ def listen_polling():
     headers = {
         'Authorization': f'Token {token}'
     }
-    params = None
-    timestamp_to_request = None
+    start_timestamp = time.time()
+    params = {'timestamp': start_timestamp}
     while True:
         try:
-            import time
-            time.sleep(60)
-            print(params)
-            response = requests.get(api_url, headers=headers, params=params)
-            params = None
+            response = requests.get(api_url, headers=headers, params=params, timeout=95)
             if response.ok:
                 json_response = response.json()
                 status = json_response.get('status')
+                response_time = time.time()
                 if status == 'timeout':
-                    print('Timeout!')
-                    print(json_response)
-                    timestamp_to_request = json_response.get('timestamp_to_request')
-
-                    print(timestamp_to_request)
-                    params = {'timestamp': timestamp_to_request}
-                    timestamp_to_request = None
+                    params = {'timestamp': response_time}
                 elif status == 'found':
-                    print(f'--->{json_response}')
-                    # send_task_status(json_response)
-                    params = None
+                    send_task_status(json_response)
+                    params = {'timestamp': response_time}
             else:
                 raise requests.HTTPError(response)
-            # if timestamp_to_request:
-            #     response = requests.get(
-            #         api_url,
-            #         headers=headers,
-            #         params={'timestamp': timestamp_to_request})
-            #     timestamp_to_request = None
-            # else:
-            # if timestamp_to_request:
-            #     response = requests.get(api_url, headers=headers)
-            #     if response.ok:
-            #         json_response = response.json()
-            #         print(json_response)
-            #         timestamp_to_request = json_response.get('timestamp_to_request')
-            #         status = json_response['status']
-            #         if status == 'found':
-            #             send_task_status(json_response)
-            #         elif status == 'timeout':
-            #             timestamp_to_request = response_json.get('timestamp_to_request')
-            #             response = requests.get(
-            #                 api_url,
-            #                 headers=headers,
-            #                 params={'timestamp': timestamp_to_request})
-            #             timestamp_to_request = None
-            #     else:
-            #         raise requests.HTTPError(response)
         except requests.exceptions.ConnectionError as e:
             print(f"Не удалось установить соединение с сервером, пробуем ещё раз...")
+        except requests.exceptions.ReadTimeout as e:
+            print(f"Ответ от сервера не получен, пробуем ещё раз...")
 
 
 if __name__ == '__main__':
     load_dotenv()
     bot_token = os.getenv('bot_token')
+    proxy_url = os.getenv('proxy')
+    proxy_login = os.getenv('proxy_login')
+    proxy_password = os.getenv('proxy_password')
     request_kwargs = {
-        'proxy_url': 'socks5://',
+        'proxy_url': proxy_url,
         # Optional, if you need authentication:
         'urllib3_proxy_kwargs': {
-            'username': '',
-            'password': '',
+            'username': proxy_login,
+            'password': proxy_password,
         }
     }
     updater = Updater(token=bot_token, request_kwargs=request_kwargs)
