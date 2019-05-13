@@ -1,5 +1,4 @@
 import os
-import time
 import requests
 from telegram.ext import Updater
 from dotenv import load_dotenv
@@ -27,21 +26,17 @@ def listen_polling():
     headers = {
         'Authorization': f'Token {token}'
     }
-    start_timestamp = time.time()
-    params = {'timestamp': start_timestamp}
+    params = None
     while True:
         try:
-            # time.sleep(60)
             response = requests.get(api_url, headers=headers, params=params, timeout=95)
             response.raise_for_status()
             json_response = response.json()
             status = json_response.get('status')
             if status == 'timeout':
                 params = {'timestamp': json_response.get('timestamp_to_request')}
-                print(json_response)
             elif status == 'found':
-                # send_task_status(json_response)
-                print(json_response)
+                send_task_status(json_response)
                 params = {'timestamp': json_response.get('last_attempt_timestamp')}
         except requests.exceptions.ConnectionError as e:
             print(f"Не удалось установить соединение с сервером, пробуем ещё раз...")
