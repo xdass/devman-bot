@@ -58,6 +58,7 @@ if __name__ == '__main__':
             'password': proxy_password,
         }
     }
-    updater = Updater(token=bot_token, request_kwargs=request_kwargs)
+    #updater = Updater(token=bot_token, request_kwargs=request_kwargs)
+    updater = Updater(token=bot_token)
     bot = updater.bot
     listen_polling()
