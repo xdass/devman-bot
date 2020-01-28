@@ -5,6 +5,9 @@ from telegram.ext import Updater
 from dotenv import load_dotenv
 
 
+logger = logging.getLogger("notify_bot")
+
+
 def send_task_status(json_body):
     chat_id = os.getenv('chat_id')
     base_url = "https://dvmn.org"
@@ -47,7 +50,7 @@ def listen_polling():
 
 if __name__ == '__main__':
     load_dotenv()
-    logging.debug("Бот запущен!")
+    logger.debug("Бот запущен!")
     bot_token = os.getenv('bot_token')
     proxy_url = os.getenv('proxy')
     proxy_login = os.getenv('proxy_login')
