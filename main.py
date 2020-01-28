@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 
 
 logger = logging.getLogger("notify_bot")
-logger.setLevel(logging.DEBUG)
 
 
 def send_task_status(json_body):
@@ -51,7 +50,7 @@ def listen_polling():
 
 if __name__ == '__main__':
     load_dotenv()
-    logger.debug("Бот запущен!")
+    logger.warning("Бот запущен!")
     bot_token = os.getenv('bot_token')
     proxy_url = os.getenv('proxy')
     proxy_login = os.getenv('proxy_login')
