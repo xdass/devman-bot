@@ -14,10 +14,10 @@ def send_task_status(json_body):
         lesson_url = attempt['lesson_url']
         is_negative = attempt['is_negative']
         if is_negative:
-            message = f"Была проверена задача \"{lesson_title}\"\n\n Задача успешно решена!"
-        else:
             message = f"Была проверена задача \"{lesson_title}\"" \
                 f"\n\n В задаче имеются ошибки. Посмотреть {base_url + lesson_url}"
+        else:
+            message = f"Была проверена задача \"{lesson_title}\"\n\n Задача успешно решена!"
         bot.send_message(chat_id=chat_id, text=message)
 
 
@@ -47,6 +47,7 @@ def listen_polling():
 
 if __name__ == '__main__':
     load_dotenv()
+    logging.debug("Бот запущен!")
     bot_token = os.getenv('bot_token')
     proxy_url = os.getenv('proxy')
     proxy_login = os.getenv('proxy_login')
@@ -61,6 +62,5 @@ if __name__ == '__main__':
     }
     #updater = Updater(token=bot_token, request_kwargs=request_kwargs)
     updater = Updater(token=bot_token)
-    logging.debug("Бот запущен!")
     bot = updater.bot
     listen_polling()
