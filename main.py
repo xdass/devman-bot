@@ -5,7 +5,15 @@ from telegram.ext import Updater
 from dotenv import load_dotenv
 
 
-logger = logging.getLogger("notify_bot")
+class BotLogsHandler(logging.Handler):
+
+    def __init__(self, bot_token):
+        self.updater = Updater(token=bot_token)
+        self.bot = self.updater.bot
+        super().__init__()
+
+    def emit(self, record):
+        log_entry = self.format(record)
 
 
 def send_task_status(json_body):
@@ -21,7 +29,7 @@ def send_task_status(json_body):
                 f"\n\n В задаче имеются ошибки. Посмотреть {base_url + lesson_url}"
         else:
             message = f"Была проверена задача \"{lesson_title}\"\n\n Задача успешно решена!"
-        bot.send_message(chat_id=chat_id, text=message)
+        logger.bot.send_message(chat_id=chat_id, text=message)
 
 
 def listen_polling():
@@ -50,11 +58,15 @@ def listen_polling():
 
 if __name__ == '__main__':
     load_dotenv()
-    logger.warning("Бот запущен!")
     bot_token = os.getenv('bot_token')
     proxy_url = os.getenv('proxy')
     proxy_login = os.getenv('proxy_login')
     proxy_password = os.getenv('proxy_password')
+
+    logger = logging.getLogger("notify_bot")
+    logger.setLevel(logging.INFO)
+    logger.addHandler(BotLogsHandler(bot_token))
+
     request_kwargs = {
         'proxy_url': proxy_url,
         # Optional, if you need authentication:
@@ -63,7 +75,7 @@ if __name__ == '__main__':
             'password': proxy_password,
         }
     }
-    #updater = Updater(token=bot_token, request_kwargs=request_kwargs)
-    updater = Updater(token=bot_token)
-    bot = updater.bot
+    # updater = Updater(token=bot_token)
+    # bot = updater.bot
+    logger = BotLogsHandler(bot_token)
     listen_polling()
