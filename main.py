@@ -1,4 +1,5 @@
 import os
+import logging
 import requests
 from telegram.ext import Updater
 from dotenv import load_dotenv
@@ -60,5 +61,6 @@ if __name__ == '__main__':
     }
     #updater = Updater(token=bot_token, request_kwargs=request_kwargs)
     updater = Updater(token=bot_token)
+    logging.debug("Бот запущен!")
     bot = updater.bot
     listen_polling()
