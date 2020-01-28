@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 
 logger = logging.getLogger("notify_bot")
+logger.setLevel(logging.DEBUG)
 
 
 def send_task_status(json_body):
