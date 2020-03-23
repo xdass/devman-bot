@@ -1,6 +1,7 @@
 # Comics publisher
 
-This script inform you about check status on devman task by send message to the telegram bot.
+This script inform you about check status on devman task by send message to the telegram bot.<br>
+If an error occurs while the bot is running, logger send info messages to telegram chat.
 
 ### How to install
 
@@ -9,6 +10,9 @@ This script inform you about check status on devman task by send message to the 
 3. Create .env file and add token=devman_token, bot_token=your_bot_token and chat_id=your_chat_id.
 To find chat_id , write message to telegram bot @userinfobot
 4. Install dependencies (written below)
+
+# Deploy Heroku
+See instructions -> [How to deploy on heroku](https://devcenter.heroku.com/articles/git)
 
 Note: This script using SOCKS5 Proxy, because from Russia access to telegram is blocked.
 #### Proxy settings
@@ -32,7 +36,8 @@ pip install -r requirements.txt
 ```
 python main.py
 ```
-
+### Example
+<img src="https://i.ibb.co/qx4L0fS/bot-logger.png" alt="bot-logger" border="0"></a><br />
 ### Project Goals
 
 The code is written for educational purposes on online-course for web-developers [dvmn.org](https://dvmn.org/).
