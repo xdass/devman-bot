@@ -1,4 +1,5 @@
 import os
+import traceback
 import logging
 import requests
 from telegram.ext import Updater
@@ -23,7 +24,7 @@ def send_task_status(json_body):
     base_url = "https://dvmn.org"
     attempts = json_body['new_attempts']
     try:
-        a = 20 / 0
+        a = 10 / 0
         for attempt in attempts:
             lesson_title = attempt['lesson_title']
             lesson_url = attempt['lesson_url']
@@ -33,9 +34,10 @@ def send_task_status(json_body):
                     f"\n\n В задаче имеются ошибки. Посмотреть {base_url + lesson_url}"
             else:
                 message = f"Была проверена задача \"{lesson_title}\"\n\n Задача успешно решена!"
-            logger.bot.send_message(chat_id=chat_id, text=message)
+            bot.send_message(chat_id=chat_id, text=message)
     except Exception as e:
-        logger.error(e)
+        logger.info(f"Бот упал с ошибкой:")
+        logger.info(traceback.format_exc())
 
 
 def listen_polling():
@@ -81,7 +83,7 @@ if __name__ == '__main__':
             'password': proxy_password,
         }
     }
-    # updater = Updater(token=bot_token)
-    # bot = updater.bot
-    logger = BotLogsHandler(bot_token)
+    updater = Updater(token=bot_token)
+    bot = updater.bot
+    logger.info("Бот запущен!")
     listen_polling()
