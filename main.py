@@ -7,29 +7,35 @@ from dotenv import load_dotenv
 
 class BotLogsHandler(logging.Handler):
 
-    def __init__(self, bot_token):
-        self.updater = Updater(token=bot_token)
+    def __init__(self, token):
+        self.updater = Updater(token=token)
         self.bot = self.updater.bot
         super().__init__()
 
     def emit(self, record):
+        chat_id = os.getenv('chat_id')
         log_entry = self.format(record)
+        self.bot.send_message(chat_id=chat_id, text=log_entry)
 
 
 def send_task_status(json_body):
     chat_id = os.getenv('chat_id')
     base_url = "https://dvmn.org"
     attempts = json_body['new_attempts']
-    for attempt in attempts:
-        lesson_title = attempt['lesson_title']
-        lesson_url = attempt['lesson_url']
-        is_negative = attempt['is_negative']
-        if is_negative:
-            message = f"Была проверена задача \"{lesson_title}\"" \
-                f"\n\n В задаче имеются ошибки. Посмотреть {base_url + lesson_url}"
-        else:
-            message = f"Была проверена задача \"{lesson_title}\"\n\n Задача успешно решена!"
-        logger.bot.send_message(chat_id=chat_id, text=message)
+    try:
+        a = 20 / 0
+        for attempt in attempts:
+            lesson_title = attempt['lesson_title']
+            lesson_url = attempt['lesson_url']
+            is_negative = attempt['is_negative']
+            if is_negative:
+                message = f"Была проверена задача \"{lesson_title}\"" \
+                    f"\n\n В задаче имеются ошибки. Посмотреть {base_url + lesson_url}"
+            else:
+                message = f"Была проверена задача \"{lesson_title}\"\n\n Задача успешно решена!"
+            logger.bot.send_message(chat_id=chat_id, text=message)
+    except Exception as e:
+        logger.error(e)
 
 
 def listen_polling():
