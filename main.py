@@ -35,7 +35,7 @@ def send_task_status(json_body):
                 message = f"Была проверена задача \"{lesson_title}\"\n\n Задача успешно решена!"
             logger.bot.send_message(chat_id=chat_id, text=message)
     except Exception as e:
-        logger.error(e)
+        logger.info(e)
 
 
 def listen_polling():
@@ -81,7 +81,6 @@ if __name__ == '__main__':
             'password': proxy_password,
         }
     }
-    # updater = Updater(token=bot_token)
-    # bot = updater.bot
-    logger = BotLogsHandler(bot_token)
+    updater = Updater(token=bot_token)
+    bot = updater.bot
     listen_polling()
