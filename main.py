@@ -33,7 +33,7 @@ def send_task_status(json_body):
                     f"\n\n В задаче имеются ошибки. Посмотреть {base_url + lesson_url}"
             else:
                 message = f"Была проверена задача \"{lesson_title}\"\n\n Задача успешно решена!"
-            logger.bot.send_message(chat_id=chat_id, text=message)
+            bot.send_message(chat_id=chat_id, text=message)
     except Exception as e:
         logger.info(e)
 
