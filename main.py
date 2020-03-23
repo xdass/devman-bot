@@ -24,7 +24,6 @@ def send_task_status(json_body):
     attempts = json_body['new_attempts']
     while True:
         try:
-            a = 20 / 0
             for attempt in attempts:
                 lesson_title = attempt['lesson_title']
                 lesson_url = attempt['lesson_url']
