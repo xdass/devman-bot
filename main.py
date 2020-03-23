@@ -22,20 +22,22 @@ def send_task_status(json_body):
     chat_id = os.getenv('chat_id')
     base_url = "https://dvmn.org"
     attempts = json_body['new_attempts']
-    try:
-        a = 20 / 0
-        for attempt in attempts:
-            lesson_title = attempt['lesson_title']
-            lesson_url = attempt['lesson_url']
-            is_negative = attempt['is_negative']
-            if is_negative:
-                message = f"Была проверена задача \"{lesson_title}\"" \
-                    f"\n\n В задаче имеются ошибки. Посмотреть {base_url + lesson_url}"
-            else:
-                message = f"Была проверена задача \"{lesson_title}\"\n\n Задача успешно решена!"
-            bot.send_message(chat_id=chat_id, text=message)
-    except Exception as e:
-        logger.error(e)
+    while True:
+        try:
+            a = 20 / 0
+            for attempt in attempts:
+                lesson_title = attempt['lesson_title']
+                lesson_url = attempt['lesson_url']
+                is_negative = attempt['is_negative']
+                if is_negative:
+                    message = f"Была проверена задача \"{lesson_title}\"" \
+                        f"\n\n В задаче имеются ошибки. Посмотреть {base_url + lesson_url}"
+                else:
+                    message = f"Была проверена задача \"{lesson_title}\"\n\n Задача успешно решена!"
+                bot.send_message(chat_id=chat_id, text=message)
+        except Exception as e:
+            logger.info(f"Бот упал с ошибкой:")
+            logger.info(e)
 
 
 def listen_polling():
@@ -70,7 +72,7 @@ if __name__ == '__main__':
     proxy_password = os.getenv('proxy_password')
 
     logger = logging.getLogger("notify_bot")
-    logger.setLevel(logging.ERROR)
+    logger.setLevel(logging.INFO)
     logger.addHandler(BotLogsHandler(bot_token))
 
     request_kwargs = {
@@ -83,4 +85,5 @@ if __name__ == '__main__':
     }
     updater = Updater(token=bot_token)
     bot = updater.bot
+    logger.info("Бот запущен!")
     listen_polling()
