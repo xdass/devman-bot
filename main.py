@@ -1,4 +1,5 @@
 import os
+import sys
 import logging
 import requests
 from telegram.ext import Updater
@@ -22,21 +23,20 @@ def send_task_status(json_body):
     chat_id = os.getenv('chat_id')
     base_url = "https://dvmn.org"
     attempts = json_body['new_attempts']
-    while True:
-        try:
-            for attempt in attempts:
-                lesson_title = attempt['lesson_title']
-                lesson_url = attempt['lesson_url']
-                is_negative = attempt['is_negative']
-                if is_negative:
-                    message = f"Была проверена задача \"{lesson_title}\"" \
-                        f"\n\n В задаче имеются ошибки. Посмотреть {base_url + lesson_url}"
-                else:
-                    message = f"Была проверена задача \"{lesson_title}\"\n\n Задача успешно решена!"
-                bot.send_message(chat_id=chat_id, text=message)
-        except Exception as e:
-            logger.info(f"Бот упал с ошибкой:")
-            logger.info(e)
+    try:
+        for attempt in attempts:
+            lesson_title = attempt['lesson_title']
+            lesson_url = attempt['lesson_url']
+            is_negative = attempt['is_negative']
+            if is_negative:
+                message = f"Была проверена задача \"{lesson_title}\"" \
+                    f"\n\n В задаче имеются ошибки. Посмотреть {base_url + lesson_url}"
+            else:
+                message = f"Была проверена задача \"{lesson_title}\"\n\n Задача успешно решена!"
+            bot.send_message(chat_id=chat_id, text=message)
+    except Exception as e:
+        logger.info(f"Бот упал с ошибкой:")
+        logger.info(sys.exc_info()[0])
 
 
 def listen_polling():
