@@ -70,7 +70,7 @@ if __name__ == '__main__':
     proxy_password = os.getenv('proxy_password')
 
     logger = logging.getLogger("notify_bot")
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.ERROR)
     logger.addHandler(BotLogsHandler(bot_token))
 
     request_kwargs = {
