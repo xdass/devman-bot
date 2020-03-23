@@ -1,5 +1,5 @@
 import os
-import sys
+import traceback
 import logging
 import requests
 from telegram.ext import Updater
@@ -37,7 +37,7 @@ def send_task_status(json_body):
             bot.send_message(chat_id=chat_id, text=message)
     except Exception as e:
         logger.info(f"Бот упал с ошибкой:")
-        logger.info(sys.exc_info()[0])
+        logger.info(traceback.format_exc())
 
 
 def listen_polling():
