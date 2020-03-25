@@ -29,6 +29,7 @@ def send_task_status(json_body):
     base_url = "https://dvmn.org"
     attempts = json_body['new_attempts']
     try:
+        a = 10 / 0
         for attempt in attempts:
             lesson_title = attempt['lesson_title']
             lesson_url = attempt['lesson_url']
