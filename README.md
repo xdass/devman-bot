@@ -6,9 +6,15 @@ If an error occurs while the bot is running, logger send info messages to telegr
 ### How to install
 
 1. You need devman api token.
-2. Register telegram bot. This link helps you -> [How to register telegram bot](https://smmplanner.com/blog/otlozhennyj-posting-v-telegram/).
-3. Create .env file and add token=devman_token, bot_token=your_bot_token and chat_id=your_chat_id.
-To find chat_id , write message to telegram bot @userinfobot
+2. Register telegram bot and save token. This link helps you -> [How to register telegram bot](https://smmplanner.com/blog/otlozhennyj-posting-v-telegram/).
+3. Create .env file and add next lines:
+* ```DVMN_TOKEN=devman_token``` - your token for dvmn.org
+* ```TELEGRAM_TOKEN=your_bot_token``` - your token of telegram bot
+* ```CHAT_ID=your_chat_id``` - your telegram chat_id. To find chat_id , write message to telegram bot @userinfobot
+* ```PROXY=proxy_addr``` - proxy server address (if you use proxy fill this variable)
+* ```PROXY_LOGIN``` - proxy login (if you use proxy fill this variable)
+* ```PROXY_PASSWORD``` - proxy password (if you use proxy fill this variable)
+<br> 
 4. Install dependencies (written below)
 
 # Deploy Heroku
